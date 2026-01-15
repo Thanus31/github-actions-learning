@@ -9,5 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Say Hello
-        run: echo "Hello from custom workflow!"
+      - name: Show Env Variable
+        run: echo "My env variable is Thanusha"
+        env:
+          MY_NAME: Thanusha
