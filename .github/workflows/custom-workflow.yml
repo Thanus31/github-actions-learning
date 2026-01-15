@@ -1,7 +1,9 @@
 name: Custom Workflow
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - working-intermediate-thanusha
 jobs:
   build:
     runs-on: ubuntu-latest
