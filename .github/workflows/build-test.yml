@@ -1,4 +1,4 @@
-name: Custom Workflow
+name: Build Test Workflow
 
 on:
   push:
@@ -6,12 +6,8 @@ on:
       - develop
 
 jobs:
-  custom-job:
+  build:
     runs-on: ubuntu-latest
-
-    env:
-      NODE_ENV: test
-      LOG_LEVEL: debug
 
     strategy:
       matrix:
@@ -20,17 +16,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      - name: Print Environment Variables
-        run: |
-          echo "Environment: $NODE_ENV"
-          echo "Log Level: $LOG_LEVEL"
-
-      - name: Access Secret
-        env:
-          TEST_SECRET: ${{ secrets.TEST_SECRET }}
-        run: |
-          echo "Secret loaded successfully"
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -44,3 +29,25 @@ jobs:
       - name: Run Tests
         working-directory: ./sample-app
         run: npm test
+
+      - name: Create Artifact
+        run: echo "Build output" > output.txt
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: output.txt
+
+  download-artifact:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-output
+
+      - name: Show Artifact Content
+        run: cat output.txt
