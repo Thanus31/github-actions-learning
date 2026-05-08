@@ -1,0 +1,19 @@
+name: Conditional Workflow
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  conditional-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Always Run
+        run: echo "This step always runs"
+
+      - name: Deploy (main only)
+        if: github.ref == 'refs/heads/main'
+        run: echo "Deploying to production..."
