@@ -154,4 +154,6 @@ The app includes a health check endpoint at `/health` which returns HTTP 200 whe
 
 ---
 
+Updated sample app documentation
+
 **Happy learning! 🎓**
