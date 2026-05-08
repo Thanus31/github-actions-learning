@@ -2,29 +2,45 @@ name: Custom Workflow
 
 on:
   push:
-    branches: [develop]
+    branches:
+      - develop
 
 jobs:
   custom-job:
     runs-on: ubuntu-latest
+
     env:
       NODE_ENV: test
       LOG_LEVEL: debug
-    steps:
-      - uses: actions/checkout@v3
 
-      - name: Print environment
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 20.x]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Print Environment Variables
         run: |
-          echo "Environment: ${{ env.NODE_ENV }}"
-          echo "Log Level: ${{ env.LOG_LEVEL }}"
+          echo "Environment: $NODE_ENV"
+          echo "Log Level: $LOG_LEVEL"
+
+      - name: Access Secret
+        env:
+          TEST_SECRET: ${{ secrets.TEST_SECRET }}
+        run: |
+          echo "Secret loaded successfully"
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: ${{ matrix.node-version }}
 
-      - name: Install and Test
-        run: |
-          cd sample-app
-          npm install
-          npm test
+      - name: Install Dependencies
+        working-directory: ./sample-app
+        run: npm install
+
+      - name: Run Tests
+        working-directory: ./sample-app
+        run: npm test
